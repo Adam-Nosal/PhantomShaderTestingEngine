@@ -170,15 +170,14 @@
     <ClCompile Include="Src\GamePad.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="Src\ModelLoadVBO.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Keyboard.cpp">
       <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\Mouse.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="Src\ModelLoadOBJ.cpp" />
+    <ClCompile Include="Src\ModelLoadVBO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shaders\CompileShaders.cmd">

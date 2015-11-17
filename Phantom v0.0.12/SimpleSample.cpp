@@ -36,7 +36,6 @@
 #include "SpriteBatch.h"
 #include "SpriteFont.h"
 #include "VertexTypes.h"
-
 #include "resource.h"
 
 #include <algorithm>
@@ -66,7 +65,7 @@ std::unique_ptr<BasicEffect>                            g_BatchEffect;
 std::unique_ptr<EffectFactory>                          g_FXFactory;
 std::unique_ptr<GeometricPrimitive>                     g_Shape;
 std::unique_ptr<GeometricPrimitive>                     g_Shape2;
-//std::unique_ptr<Model>                                  g_Model;
+std::unique_ptr<Model>                                  g_Model;
 std::unique_ptr<PrimitiveBatch<VertexPositionColor>>    g_Batch;
 std::unique_ptr<SpriteBatch>                            g_Sprites;
 std::unique_ptr<SpriteFont>                             g_Font;
@@ -164,9 +163,9 @@ HRESULT InitWindow( HINSTANCE hInstance, int nCmdShow )
 
     // Create window
     g_hInst = hInstance;
-    RECT rc = { 0, 0, 640, 480 };
+    RECT rc = { 0, 0, 1366, 768 };
     AdjustWindowRect( &rc, WS_OVERLAPPEDWINDOW, FALSE );
-    g_hWnd = CreateWindow( L"SampleWindowClass", L"DirectXTK Simple Sample", WS_OVERLAPPEDWINDOW,
+	g_hWnd = CreateWindow(L"SampleWindowClass", L"DirectXTK Simple Sample", (WS_CAPTION | WS_SYSMENU | WS_MAXIMIZE | WS_MINIMIZEBOX),
                            CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
                            nullptr );
     if( !g_hWnd )
@@ -316,6 +315,7 @@ HRESULT InitDevice()
 		//GeometricPrimitive::CreateTeapot( g_pImmediateContext, 4.f, 8, false );
 	g_Shape2 = GeometricPrimitive::CreateDodecahedron(g_pImmediateContext, 2.0f, true);
 
+	g_Model = Model::CreateFromOBJ(g_pd3dDevice, L"BMO.obj");
 
    // g_Model =
 
@@ -632,10 +632,15 @@ void Render()
 
 	
 
-	XMMATRIX localForShape2 = XMMatrixMultiply(g_World, XMMatrixTranslation(-2.f, 0.f, 0.f));
-	g_Shape2->Draw(localForShape2, g_View, g_Projection, Colors::White, g_pTextureRV2);
+	localForShape1 = XMMatrixMultiply(g_World, XMMatrixTranslation(-2.f, 0.f, 0.f));
+	g_Shape2->Draw(localForShape1, g_View, g_Projection, Colors::White, g_pTextureRV2);
 
-
+	XMVECTOR qid = XMQuaternionIdentity();
+	const XMVECTORF32 scale = { 0.20f, 0.20f, 0.20f };
+	const XMVECTORF32 translate = { 0.f, -6.f, 30.f };
+	XMVECTOR rotate = XMQuaternionRotationRollPitchYaw(0, XM_PI / 2.f, 0);
+	localForShape1 = XMMatrixMultiply(g_World, XMMatrixTransformation(g_XMZero, qid, scale, g_XMZero, rotate, translate));
+	g_Model->Draw(g_pImmediateContext, *g_States, localForShape1, g_View, g_Projection);
 
     // Present our back buffer to our front buffer
     g_pSwapChain->Present( 0, 0 );
